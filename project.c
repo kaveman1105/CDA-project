@@ -12,6 +12,35 @@
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
+    switch (ALUControl) {
+        case 1:
+            ALUresult = A + B;
+            break;
+            
+        case 2:
+            ALUresult = A - B;
+            break;
+        case 3:
+            if (A < B) {
+                ALUresult = 1;
+            }
+            else
+                ALUresult = 0;
+        case 4:
+            ALUresult = A && B;
+            break;
+        case 5:
+            ALUresult = A || B;
+            break;
+        case 6:
+            B << 16;
+            break;
+        case 7:
+            ALUresult = !A;
+            break;
+        default:
+            break;
+    }
     
 }
 
