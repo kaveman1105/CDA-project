@@ -16,30 +16,30 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 	switch (ALUControl){
 
-	case '000':
+	case 0:
 
-		ALUresult = A + B;
+		*ALUresult = A + B;
 
 		if(ALUresult == 0)
 			*Zero = 1;
 
 		break;
 
-	case '001':
+	case 1:
 
-		ALUresult = A - B;
+		*ALUresult = A - B;
 
 		if( ALUresult == 0 )
 			*Zero = 1;
 
 		break;
 
-	case '010':
+	case 2:
 
 		if ( A < B)
-			ALUresult = 1;
+			*ALUresult = 1;
 		else
-			ALUresult = 0;
+			*ALUresult = 0;
 
 		if ( ALUresult == 0 )
 
@@ -47,7 +47,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		break;
 
-	case '011':
+	case 3:
 
 		if ( A > B ){
 
@@ -57,7 +57,17 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		else
 
-			ALUresult == 1;
+			*ALUresult = 1;
+
+		if ( *ALUresult == 0 )
+
+			*Zero = 1;
+
+		break;
+
+	case 4:
+
+		*ALUresult = A & B; // Bitwise AND
 
 		if ( ALUresult == 0 )
 
@@ -65,19 +75,9 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		break;
 
-	case '100':
+	case 5:
 
-		ALUresult = A & B; // Bitwise AND
-
-		if ( ALUresult == 0 )
-
-			*Zero = 1;
-
-		break;
-
-	case '101':
-
-		ALUresult = A | B; // Bitwise OR
+		*ALUresult = A | B; // Bitwise OR
 
 		if ( ALUresult == 0 )
 
@@ -85,9 +85,9 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		break;
 
-	case '110':
+	case 6:
 
-		ALUresult = B << 16;
+		*ALUresult = B << 16;
 
 		if(ALUresult == 0)
 
@@ -95,7 +95,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		break;
 
-	case '111':
+	case 7:
 
 		ALUControl = !A;    //logical not
 
