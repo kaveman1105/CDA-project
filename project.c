@@ -13,12 +13,15 @@
 void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zero) {
 
 	Zero = 0;
+    
+    printf("ALUControl = %c\n", ALUControl);
 
 	switch (ALUControl){
 
 	case 0:
 
 		*ALUresult = A + B;
+            printf("ALUresult =  A + B\n\t=%u\n", *ALUresult);
 
 		if(ALUresult == 0)
 			*Zero = 1;
@@ -28,6 +31,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 	case 1:
 
 		*ALUresult = A - B;
+            printf("ALUresult =  A - B\n\t=%u\n", *ALUresult);
 
 		if( ALUresult == 0 )
 			*Zero = 1;
@@ -44,7 +48,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		if ( ALUresult == 0 )
 
 			*Zero = 1;
-
+            printf("ALUresult for A < B\n\t=%u\n", *ALUresult);
 		break;
 
 	case 3:
@@ -62,7 +66,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		if ( *ALUresult == 0 )
 
 			*Zero = 1;
-
+            printf("ALUresult for A > B\n\t=%u\n", *ALUresult);
 		break;
 
 	case 4:
@@ -72,7 +76,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		if ( ALUresult == 0 )
 
 			*Zero = 1;
-
+            printf("ALUresult for A & B\n\t=%u\n", *ALUresult);
 		break;
 
 	case 5:
@@ -82,7 +86,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		if ( ALUresult == 0 )
 
 			*Zero = 1;
-
+            printf("ALUresult for A | B\n\t=%u\n", *ALUresult);
 		break;
 
 	case 6:
@@ -92,7 +96,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		if(ALUresult == 0)
 
 			*Zero = 1;
-
+            printf("ALUresult for B << 16\n\t=%u\n", *ALUresult);
 		break;
 
 	case 7:
@@ -102,7 +106,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		if(ALUresult == 0)
 
 			*Zero = 1;
-
+            printf("ALUresult for !A\n\t=%u\n", *ALUresult);
 		break;
 
 	}
@@ -119,10 +123,12 @@ int instruction_fetch(unsigned PC, unsigned *Mem, unsigned *instruction) {
          by 2 bits in order to be used with this updates the program counter (PC) Mem[] */
 
 	unsigned mindex = PC >> 2;
+    printf("PC after >> 2 being used = %u\n", mindex);
 
 	if(PC % 4 == 0){  // halt if not word aligned
 
 		*instruction = Mem[mindex]; // get next instruction
+            printf("instruction recieved from mem  = %u\n", *instruction);
 
 		return 0;
 
@@ -142,21 +148,33 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1, uns
         unsigned for_f = 0x0000003F;
         unsigned for_o = 0x0000FFFF;
         unsigned for_j = 0x03FFFFFF;
-
+    printf("op before = %u\n", *op);
         *op = instruction >> 26;            // instruction [31-26]
-
+    printf("op after = %u\n\n", *op);
+    
+    printf("r1 before = %u\n", *r1);
         *r1 = instruction >> 21 & for_r;	// instruction [25-21]
-
+    printf("r1 after = %u\n\n", *r1);
+    
+    printf("r2 before = %u\n", *r2);
         *r2 = instruction >> 16 & for_r;    // instruction [20-16]
-
+    printf("r2 after = %u\n\n", *r2);
+    
+    printf("r3 before = %u\n", *r3);
         *r3 = instruction >> 11 & for_r;	// instruction [15-11]
-
+    printf("r3 after = %u\n\n", *r3);
+    
+    printf("funct before = %u\n", *funct);
         *funct = instruction & for_f;	    // instruction [5-0]
-
+    printf("funct after = %u\n\n", *funct);
+    
+    printf("offset before = %u\n", *offset);
         *offset = instruction & for_o;	    // instruction [15-0]
-
+    printf("offset after = %u\n\n", *offset);
+    
+    printf("jsec before = %u\n", *jsec);
         *jsec =	instruction & for_j;        // instruction [25-0]
-
+    printf("jsec after = %u\n", *jsec);
 
 }
 
