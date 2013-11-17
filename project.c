@@ -350,6 +350,11 @@ void sign_extend(unsigned offset, unsigned *extended_value) {
 /* ALU operations */
 
 int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc, unsigned *ALUresult, char *Zero) {
+    printf("\n\n\nALU op section\n\n");
+    printf("ALU op = %d\n", ALUOp);
+    printf("ALU result = %u\n", *ALUresult);
+    printf("ALU src = %d\n", ALUSrc);
+    printf("funct = %u\n", funct);
 
        //Based on what the ALUSrc is: If it is 1 then we use the immediate value that was sign extended.
     if(ALUSrc == 1)
@@ -415,6 +420,12 @@ int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, u
     printf("\n\n\nrw memory section\n\n");
 	unsigned LoMem = 0x00000000;
 	unsigned HiMem = 0x0000FFFF;
+    unsigned check = ALUresult >> 2;
+    
+    //check alignment
+    if (check % 4 != 0) {
+        return 1;
+    }
 
 	if (((ALUresult) < LoMem) && ((ALUresult) > HiMem)){
 
@@ -456,7 +467,7 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
 /* PC update */
 
 void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, char Zero, unsigned *PC) {
-	printf("\n\n\nPc update section/n\n");
+	printf("\n\n\nPc update section\n\n");
 	*PC +=4;
 
 	switch (Jump){
