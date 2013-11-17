@@ -11,10 +11,10 @@
 /* ALU */
 
 void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zero) {
-
+    printf("\n\n\nALU section\n\n");
 	Zero = 0;
     
-    printf("ALUControl = %c\n", ALUControl);
+    printf("ALUControl = %d\n", ALUControl);
 
 	switch (ALUControl){
 
@@ -117,7 +117,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 /* instruction fetch */
 
 int instruction_fetch(unsigned PC, unsigned *Mem, unsigned *instruction) {
-
+    printf("\n\n\ninstruction fetch section\n\n");
 	/*From FAQ - PC has to be shifted right
 
          by 2 bits in order to be used with this updates the program counter (PC) Mem[] */
@@ -143,7 +143,7 @@ int instruction_fetch(unsigned PC, unsigned *Mem, unsigned *instruction) {
 /* instruction partition */
 
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1, unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec) {
-
+    printf("\n\n\ninstruction partition section\n\n");
         unsigned for_r = 0x0000001F;
         unsigned for_f = 0x0000003F;
         unsigned for_o = 0x0000FFFF;
@@ -314,24 +314,28 @@ int instruction_decode(unsigned op, struct_controls *controls) {
 /* Read Register */
 
 void read_register(unsigned r1, unsigned r2, unsigned *Reg, unsigned *data1, unsigned *data2) {
-
+    printf("\n\n\nread register section\n\n");
 
 
 	*data1 = Reg[r1]; // assign data1 to register 1
+    printf("data1  = %u\n", *data1);
+    
+    
 	*data2 = Reg[r2]; // assign data2 to r1egister 2
-
+    printf("data2  = %u\n", *data2);
 }
 
 /* Sign Extend */
 
 void sign_extend(unsigned offset, unsigned *extended_value) {
 
-
+    printf("\n\n\nsign extend section\n\n");
 
 	unsigned extended;
 	unsigned extend1s = 0xFFFF0000;
 	unsigned isItNegative = offset >> 15;  /* value of left-most bit of immediate operand is copied to all bits to the left (into the high-order bits)*/
-
+    printf("sign bit = %u\n", isItNegative);
+    
 	if(isItNegative == 1)
 
 		extended =   extend1s | offset;
