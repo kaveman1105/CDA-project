@@ -412,7 +412,7 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
 
 
 int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, unsigned *memdata, unsigned *Mem) {
-
+    printf("\n\n\nrw memory section\n\n");
 	unsigned LoMem = 0x00000000;
 	unsigned HiMem = 0x0000FFFF;
 
@@ -435,7 +435,7 @@ int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, u
 /* Write Register */
 
 void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresult, char RegWrite, char RegDst, char MemtoReg, unsigned *Reg) {
-
+    printf("\n\n\nwrite register section\n\n");
 	if (MemtoReg == 1 && RegDst == 0 && RegWrite == 1){
 		Reg[r2] = memdata;
 
@@ -456,7 +456,7 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
 /* PC update */
 
 void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, char Zero, unsigned *PC) {
-	
+	printf("\n\n\nPc update section/n\n");
 	*PC +=4;
 
 	switch (Jump){
