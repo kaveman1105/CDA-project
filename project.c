@@ -7,7 +7,7 @@
 //
 #include "spimcore.h"
 
-
+//This is my project branch
 /* ALU */
 
 void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zero) {
@@ -418,8 +418,7 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
 		Reg[r2] = memdata;
 
 
-
-	}else if (MemtoReg == 0 && RegDst == 0 && RegWrite == 1){
+ 	}else if (MemtoReg == 0 && RegDst == 0 && RegWrite == 1){
 		Reg[r2] = ALUresult;
 
 	}else if (MemtoReg == 0 && RegDst == 0 && RegWrite == 0){ // for the beq instruction
