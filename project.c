@@ -121,13 +121,11 @@ int instruction_fetch(unsigned PC, unsigned *Mem, unsigned *instruction) {
 	/*From FAQ - PC has to be shifted right
 
          by 2 bits in order to be used with this updates the program counter (PC) Mem[] */
-
-	unsigned mindex = PC >> 2;
-    printf("PC after >> 2 being used = %u\n", mindex);
+    printf("PC before >> 2 = %u\n", PC);
 
 	if(PC % 4 == 0){  // halt if not word aligned
 
-		*instruction = Mem[mindex]; // get next instruction
+		*instruction = Mem[PC >> 2]; // get next instruction
             printf("instruction recieved from mem  = %u\n", *instruction);
 
 		return 0;
@@ -183,130 +181,178 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1, uns
 int instruction_decode(unsigned op, struct_controls *controls) {
 
 	/*The value set for the ALUOp of 0-7 represents the binary value of the R-Type Instruction; refer to final project document page 4 */
+    printf("\n\n\ninstruction decode sction\n\n");
+    printf("op = %u", op);
 	switch (op){
-
-	case 0: // R-Type instructions (and, add, slt, sltu)
-		controls -> RegDst = 1;
-		controls -> Jump = 0;
-		controls -> Branch = 0;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 0;
-		controls -> ALUSrc = 1;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 7;
-		controls -> RegWrite = 1;
-		break;
-
-	case 1: // addi and li
-		controls -> RegDst = 0;
-		controls -> Jump = 0;
-		controls -> Branch = 0;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 0;
-		controls -> ALUSrc = 1;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 0; /*ALU will do addition or “don’t care” */
-		controls -> RegWrite = 1;
-		break;
-
-	case 2: // slti (Signed)
-		controls -> RegDst = 0;
-		controls -> Jump = 0;
-		controls -> Branch = 0;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 0;
-		controls -> ALUSrc = 1;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 2;  /*ALU will do “set less than” operation*/
-		controls -> RegWrite = 1;
-		break;
-
-	case 3: // sltiu (Unsigned)
-		controls -> RegDst = 0;
-		controls -> Jump = 0;
-		controls -> Branch = 0;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 0;
-		controls -> ALUSrc = 1;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 3;  /*ALU will do “set less than unsigned” operation*/
-        controls -> RegWrite = 1;
-		break;
-
-	case 4: // beq (Branch on equal)
-		controls -> RegDst = 0;
-		controls -> Jump = 0;
-		controls -> Branch = 1;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 0;
-		controls -> ALUSrc = 0;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 1;  /*ALU will do subtraction*/
-		controls -> RegWrite = 0;
-		break;
-
-	case 5: // j (Jump)
-		controls -> RegDst = 0;
-		controls -> Jump = 1;
-		controls -> Branch = 0;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 0;
-		controls -> ALUSrc = 0;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 2;  /*ALU will do addition or “don’t care”*/
-		controls -> RegWrite = 0;
-		break;
-
-	case 6: // lw (load word)
-		controls -> RegDst = 0;
-		controls -> Jump = 0;
-		controls -> Branch = 0;
-		controls -> MemRead = 1;
-		controls -> MemtoReg = 1;
-		controls -> ALUSrc = 1;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 0;  /*ALU will do addition or “don’t care”*/
-		controls -> RegWrite = 1;
-		break;
-
-	case 7: // lui (load unsigned immediate)
-		controls -> RegDst = 0;
-		controls -> Jump = 0;
-		controls -> Branch = 0;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 0;
-		controls -> ALUSrc = 1;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 6;  /*ALU will shift left extended_value by 16 bits*/
-		controls -> RegWrite = 1;
-		break;
-
-	case 8: // sw
-		controls -> RegDst = 2;
-		controls -> Jump = 0;
-		controls -> Branch = 0;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 2;
-		controls -> ALUSrc = 1;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 0;  /*ALU will do addition or “don’t care"*/
-		controls -> RegWrite = 0;
-		break;
-
-    case 9: // sub
-        controls -> RegDst = 1;
-		controls -> Jump = 0;
-		controls -> Branch = 0;
-		controls -> MemRead = 0;
-		controls -> MemtoReg = 2;
-		controls -> ALUSrc = 1;
-		controls -> MemWrite = 0;
-		controls -> ALUOp = 1;  /*ALU will do subtraction*/
-		controls -> RegWrite = 1;
-		break;
-
-
-	default: return 1;
+        case 1: // Add
+            controls -> RegDst = 1;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 0;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 7;
+            controls -> RegWrite = 1;
+            break;
+            
+        case 2: // sub
+            controls -> RegDst = 1;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 0;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 7;
+            controls -> RegWrite = 1;
+            break;
+            
+        case 3: // slt
+            controls -> RegDst = 1;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 0;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 7;
+            controls -> RegWrite = 1;
+            break;
+            
+        case 4:// sltu                  <-- 
+            controls -> RegDst = 1;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 0;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 7;
+            controls -> RegWrite = 1;
+            break;
+        /*case 0: // R-Type instructions (and, add, slt, sltu)
+            controls -> RegDst = 1;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 1;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 7;
+            controls -> RegWrite = 1;
+            break;
+            
+        case 1: // addi and li
+            controls -> RegDst = 0;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 1;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 0; /*ALU will do addition or “don’t care”
+            controls -> RegWrite = 1;
+            break;
+            
+        case 2: // slti (Signed)
+            controls -> RegDst = 0;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 1;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 2;  /*ALU will do “set less than” operation
+            controls -> RegWrite = 1;
+            break;
+            
+        case 3: // sltiu (Unsigned)
+            controls -> RegDst = 0;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 1;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 3;  /*ALU will do “set less than unsigned” operation
+            controls -> RegWrite = 1;
+            break;
+            
+        case 4: // beq (Branch on equal)
+            controls -> RegDst = 0;
+            controls -> Jump = 0;
+            controls -> Branch = 1;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 0;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 1;  /*ALU will do subtraction
+            controls -> RegWrite = 0;
+            break;
+            
+        case 5: // j (Jump)
+            controls -> RegDst = 0;
+            controls -> Jump = 1;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 0;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 2;  /*ALU will do addition or “don’t care”
+            controls -> RegWrite = 0;
+            break;
+            
+        case 6: // lw (load word)
+            controls -> RegDst = 0;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 1;
+            controls -> MemtoReg = 1;
+            controls -> ALUSrc = 1;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 0;  /*ALU will do addition or “don’t care”
+            controls -> RegWrite = 1;
+            break;
+            
+        case 7: // lui (load unsigned immediate)
+            controls -> RegDst = 0;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 0;
+            controls -> ALUSrc = 1;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 6;  /*ALU will shift left extended_value by 16 bits
+            controls -> RegWrite = 1;
+            break;
+            
+        case 8: // sw
+            controls -> RegDst = 2;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 2;
+            controls -> ALUSrc = 1;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 0;  /*ALU will do addition or “don’t care"
+            controls -> RegWrite = 0;
+            break;
+            
+        case 9: // sub
+            controls -> RegDst = 1;
+            controls -> Jump = 0;
+            controls -> Branch = 0;
+            controls -> MemRead = 0;
+            controls -> MemtoReg = 2;
+            controls -> ALUSrc = 1;
+            controls -> MemWrite = 0;
+            controls -> ALUOp = 1;  /*ALU will do subtraction
+            controls -> RegWrite = 1;
+            break;*/
+            
+            
+        default: return 1;
 	}
 	return 0;
 }
@@ -447,6 +493,14 @@ int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, u
 
 void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresult, char RegWrite, char RegDst, char MemtoReg, unsigned *Reg) {
     printf("\n\n\nwrite register section\n\n");
+    printf("r2 = %u\n", r2);
+    printf("r3 = %u\n", r3);
+    printf("memdata = %u\n", memdata);
+    printf("ALU result = %u\n", ALUresult);
+    printf("Regwrite = %d\n", RegWrite);
+    printf("RegDst = %d\n", RegDst);
+    printf("MemtoReg = %d\n", MemtoReg);
+    printf("Reg = %u\n", *Reg);
 	if (MemtoReg == 1 && RegDst == 0 && RegWrite == 1){
 		Reg[r2] = memdata;
 

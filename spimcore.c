@@ -350,7 +350,7 @@ void Loop(void)
 }
 
 int main(int argc, char **argv)
-{
+{ 
 	int i;
 	unsigned long t;
     
