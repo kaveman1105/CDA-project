@@ -35,7 +35,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 	case '010': // Add
 
-		if ( A < B)
+		if ( A < B )
 			ALUresult = 1;
 		else
 			ALUresult = 0;
@@ -43,23 +43,19 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		if ( ALUresult == 0 )
 
 			*Zero = 1;
+		else 
+			*Zero = 0; 
 
 		break;
 
 	case '011':
 
-		if ( A > B ){
-
+		if ( A > B )
 			ALUresult = 0;
-
-		}
-
 		else
-
 			ALUresult == 1;
 
 		if ( ALUresult == 0 )
-
 			*Zero = 1;
 
 		break;
