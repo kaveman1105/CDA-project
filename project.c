@@ -1,9 +1,8 @@
 //
-//  project.c
-//  Project
+// project.c
 //
-//  Created by Kevin Anderson on 11/14/13.
-//  Copyright (c) 2013 Kevin Anderson. All rights reserved.
+//  Created by Raikesson W. Charles on 11/18/13.
+//  Copyright (c) 2013 Raikesson W. Charles. All rights reserved.
 //
 #include "spimcore.h"
 
@@ -12,11 +11,11 @@
 
 void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zero) {
 
-	Zero = 0;
+	*Zero = 0;
 
 	switch (ALUControl){
-
-	case '000':
+	
+	case '000': // And 
 
 		ALUresult = A + B;
 
@@ -25,7 +24,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		break;
 
-	case '001':
+	case '001': // OR
 
 		ALUresult = A - B;
 
@@ -34,7 +33,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		break;
 
-	case '010':
+	case '010': // Add
 
 		if ( A < B)
 			ALUresult = 1;
