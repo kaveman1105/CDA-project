@@ -467,22 +467,35 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
 void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, char Zero, unsigned *PC) {
 	printf("\n\n\nPc update section\n\n");
     
+    printf("jsec = %u\n", jsec);
+    printf("extended value = %u\n", extended_value);
+    printf("Branch = %d\n", Branch);
+    printf("Jump = %d\n", Jump);
+    printf("Zero = %u\n", Zero);
+    printf("PC = %u\n", *PC);
+    
 	*PC += 4;
     
     if (Jump == 1) {
+        jsec = jsec << 2;
+        *PC = jsec + 4;
+    }
+    
+    if (Branch == 1 && Zero == 1) {
         
     }
-/*
-	switch (Jump){
+    
+    
+    
+    
+    
+    printf("\n\njsec after = %u\n", jsec);
+    printf("extended value after = %u\n", extended_value);
+    printf("Branch after = %d\n", Branch);
+    printf("Jump after = %d\n", Jump);
+    printf("Zero after = %u\n", Zero);
+    printf("PC after = %u\n", *PC);
+    
+    
 
-	case 0:
-		if (Zero == 1 && Branch == 1)
-			*PC = (*PC) + (extended_value * 4);
-		break;
-	case 1:
-		if (Zero == 1 && Branch == 1){
-			*PC = (*PC & 0xF0000000) | (jsec * 4);
-			break;
-		}
-	} // end of switch() */
 } // end of PC_Update();  
