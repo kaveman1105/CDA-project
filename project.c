@@ -15,7 +15,8 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
     printf("A = %u\n", A);
     printf("B = %u\n", B);
     printf("Zero = %u\n", *Zero);
-	*Zero = 0;
+    printf("ALU Result before = %u\n", *ALUresult);
+	
     
     printf("ALUControl = %d\n", ALUControl);
 
@@ -26,9 +27,6 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		*ALUresult = A + B;
             printf("ALUresult =  A + B\n\t= %u\n", *ALUresult);
 
-		if(*ALUresult == 0)
-			*Zero = 1;
-
 		break;
 
 	case 2:
@@ -36,21 +34,16 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 		*ALUresult = A - B;
             printf("ALUresult =  A - B\n\t= %u\n", *ALUresult);
 
-		if( *ALUresult == 0 )
-			*Zero = 1;
-
 		break;
 
 	case 3:
 
-		if ( A < B)
+		if ( A < B )
 			*ALUresult = 1;
 		else
 			*ALUresult = 0;
 
-		if ( *ALUresult == 0 )
 
-			*Zero = 1;
             printf("ALUresult for A < B\n\t= %u\n", *ALUresult);
 		break;
 
@@ -61,14 +54,9 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 			*ALUresult = 0;
 
 		}
-
 		else
-
 			*ALUresult = 1;
 
-		if ( *ALUresult == 0 )
-
-			*Zero = 1;
             printf("ALUresult for A > B\n\t=%u\n", *ALUresult);
 		break;
 
@@ -76,9 +64,6 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		*ALUresult = A & B; // Bitwise AND
 
-		if ( *ALUresult == 0 )
-
-			*Zero = 1;
             printf("ALUresult for A & B\n\t=%u\n", *ALUresult);
 		break;
 
@@ -86,9 +71,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		*ALUresult = A | B; // Bitwise OR
 
-		if ( *ALUresult == 0 )
 
-			*Zero = 1;
             printf("ALUresult for A | B\n\t=%u\n", *ALUresult);
 		break;
 
@@ -96,9 +79,7 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		*ALUresult = B << 16;
 
-		if(*ALUresult == 0)
 
-			*Zero = 1;
             printf("ALUresult for B << 16\n\t=%u\n", *ALUresult);
 		break;
 
@@ -106,13 +87,13 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
 
 		ALUControl = !A;    //logical not
 
-		if(*ALUresult == 0)
-
-			*Zero = 1;
             printf("ALUresult for !A\n\t=%u\n", *ALUresult);
 		break;
 
 	}
+    if(*ALUresult == 0)
+        *Zero = 1;
+    else *Zero = 0;
 
     printf("\n\nA after = %u\n", A);
     printf("B after = %u\n", B);
@@ -197,7 +178,7 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             controls -> MemtoReg = 0;
             controls -> ALUSrc = 0;
             controls -> MemWrite = 0;
-            controls -> ALUOp = 0;
+            controls -> ALUOp = 2;
             controls -> RegWrite = 1;
             break;
             
@@ -209,7 +190,7 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             controls -> MemtoReg = 0;
             controls -> ALUSrc = 0;
             controls -> MemWrite = 0;
-            controls -> ALUOp = 1;
+            controls -> ALUOp = 2;
             controls -> RegWrite = 1;
             break;
             
@@ -245,7 +226,7 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             controls -> MemtoReg = 0;
             controls -> ALUSrc = 0;
             controls -> MemWrite = 0;
-            controls -> ALUOp = 4;
+            controls -> ALUOp = 2;
             controls -> RegWrite = 1;
             break;
             
@@ -257,7 +238,7 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             controls -> MemtoReg = 0;
             controls -> ALUSrc = 0;
             controls -> MemWrite = 0;
-            controls -> ALUOp = 5;
+            controls -> ALUOp = 2;
             controls -> RegWrite = 1;
             break;
             
@@ -273,11 +254,11 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             controls -> RegWrite = 1;
             break;
             
-        case 8: // R-type                      <-- need to be fixed
+        case 8: // addi
             controls -> RegDst = 1;
             controls -> Jump = 0;
             controls -> Branch = 0;
-            controls -> MemRead = 0;
+            controls -> MemRead = 1;
             controls -> MemtoReg = 0;
             controls -> ALUSrc = 1;
             controls -> MemWrite = 0;
@@ -345,6 +326,7 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
     printf("data1 = %u\n", data1);
     printf("data2 = %u\n", data2);
     printf("extend value = %u\n", extended_value);
+    printf("Zero = %d", *Zero);
     
     if (ALUSrc == 1)
         data2 = extended_value;
@@ -373,6 +355,7 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
     printf("data1 after  = %u\n", data1);
     printf("data2 after  = %u\n", data2);
     printf("extend value after  = %u\n", extended_value);
+    printf("Zero after = %d", *Zero);
     
     if(*Zero == 1)
         return 1;
@@ -384,15 +367,14 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
 
 int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, unsigned *memdata, unsigned *Mem) {
     printf("\n\n\nrw memory section\n\n");
-	unsigned LoMem = 0x00000000;
-	unsigned HiMem = 0x0000FFFF;
+
     
     printf("ALU result = %d\n", ALUresult);
     printf("Data2 = %u\n", data2);
     printf("Mem write = %d\n", MemWrite);
     printf("Mem read = %d\n", MemRead);
     printf("mem data = %u\n", *memdata);
-    printf("Mem = %u\n", *Mem);
+    printf("Mem[data2] = %u\n", Mem[data2]);
 
     
     //check alignment
@@ -402,19 +384,35 @@ int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, u
 
 	if (MemWrite == 1 && MemRead == 0) {
         Mem[data2] = ALUresult;
+        printf("\n\nALU result after = %d\n", ALUresult);
+        printf("Data2 after = %u\n", data2);
+        printf("Mem write after = %d\n", MemWrite);
+        printf("Mem read after = %d\n", MemRead);
+        printf("mem data after = %u\n", *memdata);
+        printf("Mem[data2] after = %u\n", Mem[data2]);
         return 0;
     }
     if (MemWrite == 0 && MemRead == 1) {
         *memdata = ALUresult;
+        printf("\n\nALU result after = %d\n", ALUresult);
+        printf("Data2 after = %u\n", data2);
+        printf("Mem write after = %d\n", MemWrite);
+        printf("Mem read after = %d\n", MemRead);
+        printf("mem data after = %u\n", *memdata);
+        printf("Mem[data2] after = %u\n", Mem[data2]);
         return 0;
     }
-    
-    printf("\n\nALU result after = %d\n", ALUresult);
-    printf("Data2 after = %u\n", data2);
-    printf("Mem write after = %d\n", MemWrite);
-    printf("Mem read after = %d\n", MemRead);
-    printf("mem data after = %u\n", *memdata);
-    printf("Mem after = %u\n", *Mem);
+    if (MemWrite == 1 && MemRead == 1) {
+        *memdata = ALUresult;
+        Mem[data2] = ALUresult;
+        printf("\n\nALU result after = %d\n", ALUresult);
+        printf("Data2 after = %u\n", data2);
+        printf("Mem write after = %d\n", MemWrite);
+        printf("Mem read after = %d\n", MemRead);
+        printf("mem data after = %u\n", *memdata);
+        printf("Mem[data2] after = %u\n", Mem[data2]);
+        return 0;
+    }
     return 0;
 } // end of rw_memory();
 
@@ -446,7 +444,7 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
 		Reg[r2] = memdata;
 
 	}if (MemtoReg == 0 && RegDst == 1 && RegWrite == 1){
-		Reg[r3] = ALUresult;
+		Reg[r2] = ALUresult;
 
         
         printf("\n\nr2 after = %u\n", r2);
