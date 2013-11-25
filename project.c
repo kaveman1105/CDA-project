@@ -363,6 +363,8 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
              */
     
     ALU(data1, data2, funct, ALUresult, Zero);
+    
+    printf("\nALU Op after ALU\n\n");
 
     printf("ALU op after = %d\n", ALUOp);
     printf("ALU result after  = %u\n", *ALUresult);
@@ -480,7 +482,7 @@ void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, c
         jsec = jsec << 2; //shifts jsec left 2
         unsigned temp = *PC >> 2; //gets 4 most significant bits
         temp = temp << 28; //sets up temp to be added to front of jsec
-        *PC = temp & jsec; //combines temp and jsec for new PC
+        *PC = temp | jsec; //combines temp and jsec for new PC
     }
     
     else if (Branch == 1 && Zero == 1) {
