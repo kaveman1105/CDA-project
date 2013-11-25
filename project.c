@@ -474,18 +474,20 @@ void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, c
     printf("Zero = %u\n", Zero);
     printf("PC = %u\n", *PC);
     
-	*PC += 4;
+	
     
     if (Jump == 1) {
-        jsec = jsec << 2;
-        *PC = jsec + 4;
+        jsec = jsec << 2; //shifts jsec left 2
+        unsigned temp = *PC >> 2; //gets 4 most significant bits
+        temp = temp << 28; //sets up temp to be added to front of jsec
+        *PC = temp & jsec; //combines temp and jsec for new PC
     }
     
-    if (Branch == 1 && Zero == 1) {
-        
+    else if (Branch == 1 && Zero == 1) {
+        *PC = extended_value << 2; //pc gets extended << 2 on branch
     }
-    
-    
+    else
+    *PC += 4;
     
     
     
