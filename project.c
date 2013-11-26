@@ -20,80 +20,77 @@ void ALU(unsigned A, unsigned B, char ALUControl, unsigned *ALUresult, char *Zer
     
     printf("ALUControl = %d\n", ALUControl);
 
-	switch (ALUControl){
-
-	case 1:
-
-		*ALUresult = A + B;
-            printf("ALUresult =  A + B\n\t= %u\n", *ALUresult);
-
-		break;
-
-	case 2:
-
-		*ALUresult = A - B;
-            printf("ALUresult =  A - B\n\t= %u\n", *ALUresult);
-
-		break;
-
-	case 3:
-
-		if ( A < B )
-			*ALUresult = 1;
-		else
-			*ALUresult = 0;
-
-
-            printf("ALUresult for A < B\n\t= %u\n", *ALUresult);
-		break;
-
-	case 4:
-
-		if ( A > B ){
-
-			*ALUresult = 0;
-
-		}
-		else
-			*ALUresult = 1;
-
-            printf("ALUresult for A > B\n\t=%u\n", *ALUresult);
-		break;
-
-	case 5:
-
-		*ALUresult = A & B; // Bitwise AND
-
-            printf("ALUresult for A & B\n\t=%u\n", *ALUresult);
-		break;
-
-	case 6:
-
-		*ALUresult = A | B; // Bitwise OR
-
-
-            printf("ALUresult for A | B\n\t=%u\n", *ALUresult);
-		break;
-
-	case 7:
-
-		*ALUresult = B << 16;
-
-
-            printf("ALUresult for B << 16\n\t=%u\n", *ALUresult);
-		break;
-
-    case 8:
-
-		ALUControl = !A;    //logical not
-
-            printf("ALUresult for !A\n\t=%u\n", *ALUresult);
-		break;
-
-	}
-    if(*ALUresult == 0)
-        *Zero = 1;
-    else *Zero = 0;
+    int temp1, temp2, tempA, tempB;
+    switch(ALUControl){
+        case 0: //000 Z = A + B
+            *ALUresult = A + B;//may not have *
+            break;
+            
+        case 1: //001 Z = A - B
+            *ALUresult = A - B;
+            //if (*ALUresult < 0)
+            //    *ALUresult = *ALUresult * (-1);
+            break;
+            
+        case 2: //010 if A < B, Z = 1; otherwise, Z = 0
+            temp1 = 1;
+            while (A > temp1){
+                temp2 = temp1;
+                temp1 = temp1 * 2;
+            }
+            
+            if((temp1 - A) < temp2)//it is negative
+                tempA = (A - temp2)*(-1);
+            else
+                tempA = A;
+            
+            temp1 = 1;
+            while (B > temp1){
+                temp2 = temp1;
+                temp1 = temp1 * 2;
+            }
+            
+            if((temp1 - B) < temp2)//it is negative
+                tempB = (B - temp2)*(-1);
+            else
+                tempB = B;
+            
+            if (tempA < tempB){
+                *ALUresult = 1;
+                *Zero = 0;
+            }
+            
+            else
+                *ALUresult = 0;
+            break;
+            
+        case 3: //011 if A < B, Z = 1; otherwise, Z = 0 (A and B are unsigned integers)
+            
+            if (A < B)
+                *ALUresult = 1;
+            else
+                *ALUresult = 0;
+            break;
+            
+        case 4: //100 Z = A AND B
+            *ALUresult = A & B;
+            
+        case 5: //101 Z = A OR B
+            *ALUresult = A | B;
+            
+        case 6: //110 Shift left B by 16 bits
+            *ALUresult = B * 65536;// 65536 = (4^8)
+            
+        case 7: //111 Z = A NOR B
+            *ALUresult = ~(A | B);//not sure if this is right
+            break;
+            
+            if(*ALUresult == 0)
+                *Zero = 1;
+            else
+                *Zero = 0;
+            return;
+    }
 
     printf("\n\nA after = %u\n", A);
     printf("B after = %u\n", B);
@@ -352,23 +349,45 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
     printf("extend value = %u\n", extended_value);
     printf("Zero = %d", *Zero);
     
-    if (ALUSrc == 1)
-        data2 = extended_value;
+    char ALUControl = ALUOp;
+    if(ALUOp < 0 || ALUOp >7)
+        return 1;
+    if(ALUOp == 7) //r-type
+        switch(funct)
+    {
+        case 0x20: //add
+            ALUControl = 0;
+            break;
+        case 0x22: //subtract
+            ALUControl = 1;
+            break;
+        case 0x24: //and
+            ALUControl = 4;
+            break;
+        case 0x25: //or
+            ALUControl = 5;
+            break;
+        case 0x27: //nor
+            ALUControl = 7;
+            break;
+        case 0x2A: //slt
+            ALUControl = 2;
+            break;
+        case 0x2B: //sltu
+            ALUControl = 3;
+            break;
+        default:
+            printf("ALU_operations type r");
+            return 1;
+            break;
+    }
+    if(ALUSrc)
+        ALU(data1,extended_value,ALUControl,ALUresult,Zero);
     
+    else
+        ALU(data1,data2,ALUControl,ALUresult,Zero);
     
-          // R-TYPE
-            /* For R-TYPE op do ALU() based off funct
-             * 0 = add
-             * 1 = sub
-             * 2 = set less than
-             * 3 = set less than unsigned
-             * 4 = AND
-             * 5 = OR
-             * 6 = shift left 16
-             * 7 = NOT A
-             */
-    
-    ALU(data1, data2, funct, ALUresult, Zero);
+    return 0;
     
     printf("\nALU Op after ALU\n\n");
 
