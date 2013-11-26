@@ -420,12 +420,28 @@ int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, u
     printf("Mem[data2] = %u\n", Mem[data2]);
 
     
-    //check alignment
-    if ((ALUresult >> 2) % 4 != 0) {
-        return 1;
+    if(MemWrite&1)
+    {
+        if( ALUresult%4 != 0 )
+        {
+            printf("rw_memory");
+            return 1;   //Halt, address is not word aligned.
+        }
+        Mem[ALUresult>>2] = data2;    //Memory to be written,
     }
+    if(MemRead&1)
+    {
+        if( ALUresult%4 != 0 )
+        {
+            printf("rw_memory");
+            return 1;   //Halt, address is not word aligned.
+        }
+        *memdata = Mem[ALUresult>>2];
+    }
+    return 0;
+    
 
-	if (MemWrite == 1 && MemRead == 0) {
+/*	if (MemWrite == 1 && MemRead == 0) {
         Mem[data2] = ALUresult;
         printf("\n\nALU result after = %d\n", ALUresult);
         printf("Data2 after = %u\n", data2);
@@ -456,7 +472,7 @@ int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, u
         printf("Mem[data2] after = %u\n", Mem[data2]);
         return 0;
     }
-    return 0;
+    return 0;*/
 } // end of rw_memory();
 
 /* Write Register */
