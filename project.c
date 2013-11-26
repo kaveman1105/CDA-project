@@ -490,8 +490,17 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
     printf("Reg[r2] = %u\n", Reg[r2]);
     printf("Reg[r3] = %u\n", Reg[r3]);
     
+    unsigned DstReg = r2;   //set destination register to r2 (most likely case)
+    if( !(RegWrite&1) ) //RegWrite = 0
+        return;
+    if( RegDst&1 )
+        DstReg = r3;
+    if( MemtoReg&1 )
+        Reg[DstReg] = memdata;
+    else
+        Reg[DstReg] = ALUresult;
     
-	if (MemtoReg == 1 && RegDst == 0 && RegWrite == 1){
+	/*if (MemtoReg == 1 && RegDst == 0 && RegWrite == 1){
 		Reg[r2] = memdata;
 
 
@@ -503,7 +512,7 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
 		Reg[r2] = memdata;
 
 	}if (MemtoReg == 0 && RegDst == 1 && RegWrite == 1){
-		Reg[r2] = ALUresult;
+		Reg[r2] = ALUresult;*/
 
         
         printf("\n\nr2 after = %u\n", r2);
@@ -518,7 +527,7 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
         printf("Reg[r3] after = %u\n", Reg[r3]);
 
         
-	}
+	
 } // end of write_register(); 
 
 /* PC update */
