@@ -169,106 +169,130 @@ int instruction_decode(unsigned op, struct_controls *controls) {
 	/*The value set for the ALUOp of 0-7 represents the binary value of the R-Type Instruction; refer to final project document page 4 */
     printf("\n\n\ninstruction decode sction\n\n");
     printf("op = %u", op);
-	switch (op){
-        case 1: // Add
-            controls -> RegDst = 1;
-            controls -> Jump = 0;
-            controls -> Branch = 0;
-            controls -> MemRead = 0;
-            controls -> MemtoReg = 0;
-            controls -> ALUSrc = 0;
-            controls -> MemWrite = 0;
-            controls -> ALUOp = 2;
-            controls -> RegWrite = 1;
-            break;
+    switch(op)
+    {
+        case 0x0://add, sub, and, or, slt, sltu
+            controls->RegDst = 1;//type R == 1, type I == 0
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 7;
+            controls->MemWrite = 0;//may be don't care
+            controls->ALUSrc = 0;//type R == 0, type I and branching == 1
+            controls->RegWrite = 1;
+            return 0;
             
-        case 2: // sub
-            controls -> RegDst = 1;
-            controls -> Jump = 0;
-            controls -> Branch = 0;
-            controls -> MemRead = 0;
-            controls -> MemtoReg = 0;
-            controls -> ALUSrc = 0;
-            controls -> MemWrite = 0;
-            controls -> ALUOp = 2;
-            controls -> RegWrite = 1;
-            break;
             
-        case 3: // slt
-            controls -> RegDst = 1;
-            controls -> Jump = 0;
-            controls -> Branch = 0;
-            controls -> MemRead = 0;
-            controls -> MemtoReg = 0;
-            controls -> ALUSrc = 0;
-            controls -> MemWrite = 0;
-            controls -> ALUOp = 2;
-            controls -> RegWrite = 1;
-            break;
+        case 0x8://addi
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 0;
+            controls->MemWrite = 0;//may be don't care
+            controls->ALUSrc = 1;//type R == 0, type I and branching == 1
+            controls->RegWrite = 1;
+            return 0;
             
-        case 4:// sltu                      <-- need to fix this
-            controls -> RegDst = 1;
-            controls -> Jump = 0;
-            controls -> Branch = 0;
-            controls -> MemRead = 0;
-            controls -> MemtoReg = 0;
-            controls -> ALUSrc = 0;
-            controls -> MemWrite = 0;
-            controls -> ALUOp = 3;
-            controls -> RegWrite = 1;
-            break;
             
-        case 5: // AND
-            controls -> RegDst = 1;
-            controls -> Jump = 0;
-            controls -> Branch = 0;
-            controls -> MemRead = 0;
-            controls -> MemtoReg = 0;
-            controls -> ALUSrc = 0;
-            controls -> MemWrite = 0;
-            controls -> ALUOp = 2;
-            controls -> RegWrite = 1;
-            break;
+        case 0xA://slti
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 2;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 1;
+            return 0;
             
-        case 6: // OR
-            controls -> RegDst = 1;
-            controls -> Jump = 0;
-            controls -> Branch = 0;
-            controls -> MemRead = 0;
-            controls -> MemtoReg = 0;
-            controls -> ALUSrc = 0;
-            controls -> MemWrite = 0;
-            controls -> ALUOp = 2;
-            controls -> RegWrite = 1;
-            break;
             
-        case 7: // sll                      <-- need to fix this one too
-            controls -> RegDst = 1;
-            controls -> Jump = 0;
-            controls -> Branch = 0;
-            controls -> MemRead = 0;
-            controls -> MemtoReg = 0;
-            controls -> ALUSrc = 0;
-            controls -> MemWrite = 0;
-            controls -> ALUOp = 6;
-            controls -> RegWrite = 1;
-            break;
-            
-        case 8: // addi
-            controls -> RegDst = 1;
-            controls -> Jump = 0;
-            controls -> Branch = 0;
-            controls -> MemRead = 1;
-            controls -> MemtoReg = 0;
-            controls -> ALUSrc = 1;
-            controls -> MemWrite = 0;
-            controls -> ALUOp = 0;
-            controls -> RegWrite = 1;
-            break;
+        case 0xB://sltiu
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 3;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 1;
+            return 0;
             
             
             
-        default: return 1;
+            
+        case 0x4://beq
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 1;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 1;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 0;
+            return 0;
+            
+            
+        case 0x23://lw
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 1;
+            controls->MemtoReg = 1;
+            controls->ALUOp = 0;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 1;
+            return 0;
+            
+            
+        case 0x2B://sw
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 0;
+            controls->MemWrite = 1;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 0;
+            return 0;
+            
+            
+        case 0x2://jump
+            controls->RegDst = 2;
+            controls->Jump = 1;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 0;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 2;
+            controls->RegWrite = 0;
+            return 0;
+            
+            
+            /*case 6://
+             controls->RegDst = 0;
+             controls->Jump = 0;
+             controls->Branch = 0;
+             controls->MemRead = 0;
+             controls->MemtoReg = 0;
+             controls->ALUOp = 6;
+             controls->MemWrite = 0;
+             controls->ALUSrc = 1;
+             controls->RegWrite = 0;
+             return 0;
+             break;*/
+            
+        default:
+            printf("instruction decode");
+            return 1;
 	}
 	return 0;
 }
