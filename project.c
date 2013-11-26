@@ -170,7 +170,7 @@ int instruction_decode(unsigned op, struct_controls *controls) {
     printf("\n\n\ninstruction decode sction\n\n");
     printf("op = %u", op);
 	switch (op){
-        case 1: // Add
+        case 1: // Add - Control Signals verified 
             controls -> RegDst = 1;
             controls -> Jump = 0;
             controls -> Branch = 0;
@@ -182,7 +182,7 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             controls -> RegWrite = 1;
             break;
             
-        case 2: // sub
+        case 2: // Sub - 
             controls -> RegDst = 1;
             controls -> Jump = 0;
             controls -> Branch = 0;
@@ -190,7 +190,7 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             controls -> MemtoReg = 0;
             controls -> ALUSrc = 0;
             controls -> MemWrite = 0;
-            controls -> ALUOp = 2;
+            controls -> ALUOp = 1; // was 2 changing to 1 for testing
             controls -> RegWrite = 1;
             break;
             
