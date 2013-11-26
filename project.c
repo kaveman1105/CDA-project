@@ -275,14 +275,14 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             
             
             case 0xF:// lui
-             controls->RegDst = 1;
+             controls->RegDst = 0;
              controls->Jump = 0;
              controls->Branch = 0;
              controls->MemRead = 0;
              controls->MemtoReg = 0;
              controls->ALUOp = 7;
              controls->MemWrite = 0;
-             controls->ALUSrc = 0;
+             controls->ALUSrc = 1;
              controls->RegWrite = 1;
              return 0;
              break;
@@ -542,9 +542,24 @@ void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, c
     printf("Zero = %u\n", Zero);
     printf("PC = %u\n", *PC);
     
-	
+	unsigned PC_temp = *PC + 4;
     
-    if (Jump == 1) {
+    if(Jump == 0)
+    {
+        if(Branch && Zero == 1)
+            *PC =(extended_value * 4) + (*PC + 4);
+        
+        else
+            *PC = *PC + 4;
+    }
+    else if(Jump == 1)
+    {
+        PC_temp = PC_temp & 0xF0000000;
+        *PC =  (PC_temp | (jsec * 4));
+        
+    }
+    
+  /*  if (Jump == 1) {
         jsec = jsec << 2; //shifts jsec left 2
         unsigned temp = *PC >> 2; //gets 4 most significant bits
         temp = temp << 28; //sets up temp to be added to front of jsec
@@ -555,7 +570,7 @@ void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, c
         *PC = extended_value << 2; //pc gets extended << 2 on branch
     }
     else
-    *PC += 4;
+    *PC += 4;*/
     
     
     
