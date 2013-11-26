@@ -165,7 +165,7 @@ int instruction_decode(unsigned op, struct_controls *controls) {
 
 	/*The value set for the ALUOp of 0-7 represents the binary value of the R-Type Instruction; refer to final project document page 4 */
     printf("\n\n\ninstruction decode sction\n\n");
-    printf("op = %u", op);
+    printf("op = %u\n", op);
     switch(op)
     {
         case 0x0://add, sub, and, or, slt, sltu
@@ -274,18 +274,18 @@ int instruction_decode(unsigned op, struct_controls *controls) {
             return 0;
             
             
-            /*case 6://
-             controls->RegDst = 0;
+            case 0xF:// lui
+             controls->RegDst = 1;
              controls->Jump = 0;
              controls->Branch = 0;
              controls->MemRead = 0;
              controls->MemtoReg = 0;
-             controls->ALUOp = 6;
+             controls->ALUOp = 7;
              controls->MemWrite = 0;
-             controls->ALUSrc = 1;
-             controls->RegWrite = 0;
+             controls->ALUSrc = 0;
+             controls->RegWrite = 1;
              return 0;
-             break;*/
+             break;
             
         default:
             printf("instruction decode");
