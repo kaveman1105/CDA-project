@@ -106,7 +106,7 @@ int instruction_fetch(unsigned PC, unsigned *Mem, unsigned *instruction) {
     printf("\n\n\ninstruction fetch section\n\n");
 	/*From FAQ - PC has to be shifted right
 
-         by 2 bits in order to be used with this updates the program counter (PC) Mem[] */
+         by 2 bits in order to be used.This updates the 	 program counter (PC) Mem[] */
     printf("PC before >> 2 = %u\n", PC);
 
 	if(PC % 4 == 0){  // halt if not word aligned
