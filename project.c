@@ -438,14 +438,13 @@ void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresu
 
 
 	}else if (MemtoReg == 0 && RegDst == 0 && RegWrite == 1){
-		Reg[r2] = ALUresult;
+		Reg[r3] = ALUresult; // changed from "Reg[r2] to Reg[r3] for testing" 
 
 	}else if (MemtoReg == 0 && RegDst == 0 && RegWrite == 0){ // for the beq instruction
 		Reg[r2] = memdata;
 
 	}if (MemtoReg == 0 && RegDst == 1 && RegWrite == 1){
-		Reg[r2] = ALUresult;
-
+		Reg[r2] = memdata; //changed from "Reg[r2] = ALUresult to Reg[r2] = memdata for testing"
         
         printf("\n\nr2 after = %u\n", r2);
         printf("r3 = after %u\n", r3);
